@@ -54,11 +54,10 @@ if __name__ == "__main__":
     optimizer = torch.optim.SGD(cnn.parameters(), lr=1e-4)
     errorFunction = nn.MSELoss()
 
-
+  
     for iteration in range(1):
         for i, img in enumerate(loader):
             inputs, label = img
-            
             optimizer.zero_grad() #Initialisation de l'optimiseur
             output = cnn(inputs)
             label = label.type(torch.FloatTensor)
@@ -69,9 +68,5 @@ if __name__ == "__main__":
             if i % 100 == 0:
                 print(error)
 
-    torch.save(cnn.state_dict(), "project.dat") #Enregistrement du réseau dans un fichier
+    torch.save(cnn.state_dict(), "project.dat") #Enregistrement du réseau dans un fichier'''
 
-    #Pour ouvrir dans un autre script
-    cnn = CNN()
-    cnn.load_state_dict(torch.load("project.dat"))
-    cnn.eval() #toujours commencer par ça pour construire le réseau
