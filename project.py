@@ -10,7 +10,7 @@ import pandas as pd
 from FaceAgesDataset import FaceAgesDataset
 
 FILTERS_2 = 16
-KERNEL_2 = 5
+KERNEL_2 = 3
 
 class CNN(nn.Module):
     def __init__(self):
@@ -19,15 +19,15 @@ class CNN(nn.Module):
         self.pooling1 = nn.MaxPool2d(2, 2)
         self.convolution2 = nn.Conv2d(6, FILTERS_2, KERNEL_2) #Nombre de filtres de la 1ère conv, nouveau nombre de filtres
         self.pooling2 = nn.MaxPool2d(2, 2) 
-        self.layer1  = nn.Linear(35344, 100) #Le plus dur à calculer, c'est le 5x5x6 (prise de tête, regarder la doc avec la formule)
-        self.layer2  = nn.Linear(100, 50)
-        self.layer3  = nn.Linear(50, 10)
+        self.layer1  = nn.Linear(KERNEL_2 * KERNEL_2 * FILTERS_2, 500) #Le plus dur à calculer, c'est le 5x5x6 (prise de tête, regarder la doc avec la formule)
+        self.layer2  = nn.Linear(500, 200)
+        self.layer3  = nn.Linear(200, 10)
         self.layer4  = nn.Linear(10, 1)
         
     def forward(self, x):
         x = self.pooling1(torch.nn.functional.relu(self.convolution(x)))
         x = self.pooling2(torch.nn.functional.relu(self.convolution2(x)))
-        x = x.view(-1, 35344) #Convertit le tenseur en vecteur
+        x = x.view(-1, KERNEL_2 * KERNEL_2 * FILTERS_2) #Convertit le tenseur en vecteur
         x = torch.nn.functional.relu(self.layer1(x))
         x = torch.nn.functional.relu(self.layer2(x))
         x = torch.nn.functional.relu(self.layer3(x))
@@ -54,12 +54,14 @@ if __name__ == "__main__":
     optimizer = torch.optim.SGD(cnn.parameters(), lr=1e-4)
     errorFunction = nn.MSELoss()
 
-  
+
     for iteration in range(1):
         for i, img in enumerate(loader):
             inputs, label = img
             optimizer.zero_grad() #Initialisation de l'optimiseur
             output = cnn(inputs)
+            print(output)
+    '''
             label = label.type(torch.FloatTensor)
             error = errorFunction(output, label)
             error.backward()

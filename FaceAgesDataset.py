@@ -29,14 +29,13 @@ class FaceAgesDataset(Dataset):
     def __getitem__(self, idx):
         if torch.is_tensor(idx):
             idx = idx.tolist()
-
+        
         img_name = os.path.join(self.root_dir,
                                 self.ages.iloc[idx, 0])
         image = io.imread(img_name)
-        ages = self.ages.iloc[idx, 1]
-        
+        age_number = self.ages.iloc[idx, 1]
 
         if self.transform:
             image = self.transform(image)
 
-        return image, int(ages)
+        return image, age_number
