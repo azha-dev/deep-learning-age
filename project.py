@@ -36,7 +36,7 @@ class CNN(nn.Module):
     
 if __name__ == "__main__":
     transform = transforms.ToTensor()
-    ages_dataset = FaceAgesDataset('images/inputs.csv', 'images/', transform)
+    ages_dataset = FaceAgesDataset('images-test/inputs.csv', 'images-test/', transform)
    
     loader = torch.utils.data.DataLoader(ages_dataset)
 
@@ -60,8 +60,6 @@ if __name__ == "__main__":
             inputs, label = img
             optimizer.zero_grad() #Initialisation de l'optimiseur
             output = cnn(inputs)
-            print(output)
-    '''
             label = label.type(torch.FloatTensor)
             error = errorFunction(output, label)
             error.backward()
@@ -70,5 +68,5 @@ if __name__ == "__main__":
             if i % 100 == 0:
                 print(error)
 
-    torch.save(cnn.state_dict(), "project.dat") #Enregistrement du réseau dans un fichier'''
+    torch.save(cnn.state_dict(), "project.dat") #Enregistrement du réseau dans un fichier
 
